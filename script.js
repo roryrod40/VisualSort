@@ -3,10 +3,11 @@
 /*
  * Useful Variables
  */
-const elementNum = 30;
+let elementNum = 30;
 let arr = Array(elementNum);
 const maxElement = 100;
-const timePerOperation = 100;
+let timePerOperation = 33;
+let arrIsGen = false;
 let canClick = true;
 const headTitles = document.querySelectorAll(".head_title");
 const genArrBtn = document.querySelector(".gen_arr");
@@ -14,6 +15,18 @@ const inputMsg = document.querySelector(".input_msg");
 const arrContianer = document.querySelector(".arr_container");
 let arrElements = document.querySelectorAll(".bar");
 const bubSortBtn = document.querySelector(".bub_sort");
+const speedSlider = document.querySelector(".speed");
+const sizeSlider = document.querySelector(".size");
+
+/*
+ * Get speed and size of arrays
+ */
+speedSlider.oninput = function () {
+  timePerOperation = 250 / (this.value * this.value);
+};
+sizeSlider.oninput = function () {
+  elementNum = 10 * this.value;
+};
 
 /*
  * Print Array Function
@@ -85,7 +98,9 @@ function toggleCanClick() {
  * Generate Array Button
  */
 function generateArray() {
+  arrIsGen = true;
   if (canClick) {
+    arr = Array(elementNum);
     // Create array with random elements
     for (let i = 0; i < arr.length; i++) {
       arr[i] = Math.trunc(Math.random() * maxElement);
@@ -93,7 +108,7 @@ function generateArray() {
     console.log(arr);
 
     // Remove input message from HTML if present
-    if (inputMsg) inputMsg.remove();
+    if (inputMsg) inputMsg.textContent = "Random array generated!";
 
     printArr();
   }
@@ -105,7 +120,9 @@ genArrBtn.addEventListener("click", generateArray);
  */
 function bubbleSort() {
   // Preform BubbleSort
-  if (canClick) {
+  if (canClick && arrIsGen) {
+    // Print runtime
+    inputMsg.textContent = "Bubble sort runtime is O(n^2)!";
     toggleCanClick();
     let len = arr.length;
     let num = 1;
