@@ -52,7 +52,7 @@ h1 {
 
 .sort:hover,
 .sort:active {
-  cursor: pointer;
+  cursor: default;
   background-color: #c3d370;
 }
 
@@ -97,7 +97,7 @@ h1 {
 }
 
 .bar {
-  background-color: #4e5340;
+  background-color: #a44a3f;
   height: var(--bar-value);
   width: 10%;
   align-self: flex-end;
@@ -115,7 +115,7 @@ h1 {
   margin: 0 auto;
   left: 0;
   right: 0;
-  color: #3e5340;
+  color: #a44a3f;
 }
 
 .end {
