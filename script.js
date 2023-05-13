@@ -119,7 +119,7 @@ function toggleCanClickSort() {
  * Generate Array Button
  */
 function generateArray() {
-  toggleCanClickSort();
+  if (!canClickSort) toggleCanClickSort();
   arrIsGen = true;
   if (!canClick) return;
   arr = Array(elementNum);
