@@ -1,15 +1,20 @@
 "use strict";
 
-/*
- * Useful Variables
- */
+/****************************
+  Useful Variables
+ **************************/
+// constants
 let elementNum = 30;
 let arr = Array(elementNum);
 const maxElement = 100;
 let timePerOperation = 33;
+const currentColor1 = "#4f759b";
+const completedColor = "#436436";
+// booleans
 let arrIsGen = false;
 let canClick = true;
 let canClickSort = false;
+// html items
 const headTitles = document.querySelectorAll(".head_title");
 const sortTitles = document.querySelectorAll(".sort");
 const genArrBtn = document.querySelector(".gen_arr");
@@ -20,12 +25,10 @@ const bubSortBtn = document.querySelector(".bub_sort");
 const merSortBtn = document.querySelector(".mer_sort");
 const speedSlider = document.querySelector(".speed");
 const sizeSlider = document.querySelector(".size");
-const currentColor1 = "#4f759b";
-const completedColor = "#436436";
 
-/*
- * Get speed and size of arrays
- */
+/****************************
+  Get Speed and Size of Arrays
+ ****************************/
 speedSlider.oninput = function () {
   timePerOperation = 250 / (this.value * this.value);
 };
@@ -33,11 +36,11 @@ sizeSlider.oninput = function () {
   elementNum = 10 * this.value;
 };
 
-/*
- * Print Array Function
- */
+/****************************
+ Print Array Function
+ ****************************/
 function printArr() {
-  //Remove array from HTML if present;
+  // Remove array from HTML if present;
   arrElements = document.querySelectorAll(".bar");
   arrElements.forEach((element) => {
     element.remove();
@@ -60,37 +63,42 @@ function printArr() {
   });
 }
 
-/*
- * Reset Color Array Element Function
- */
+/****************************
+ Reset Array Element Color Function
+ ****************************/
 function resetColor(i) {
+  // Find array element
   arrElements = document.querySelectorAll(".bar");
   const element = arrElements[i];
+  // Reset color and text color
   element.style.backgroundColor = "";
   element.firstChild.style.color = "";
 }
 
-/*
- * Color Array Element Function
- */
+/****************************
+ Color Array Element Function
+ ****************************/
 function colorArr(arrNum, colorCode) {
   // Find array element
   arrElements = document.querySelectorAll(".bar");
   const element = arrElements[arrNum];
+  // Add color and text color
   element.style.backgroundColor = colorCode;
   element.firstChild.style.color = colorCode;
 }
 
-/*
- * Toggle Can Click Function
- */
+/****************************
+ Toogle Can Click Function
+ ****************************/
 function toggleCanClick() {
   if (canClick) {
+    // Don't allow buttons to be clicked
     canClick = false;
     headTitles.forEach((title) => {
       title.style.cursor = "default";
     });
   } else {
+    // Allow buttons to be clicked
     canClick = true;
     headTitles.forEach((title) => {
       title.style.cursor = "pointer";
@@ -98,16 +106,18 @@ function toggleCanClick() {
   }
 }
 
-/*
- * Toggle Can Click Sort Function
- */
+/****************************
+ Toogle Can Click Sort Function
+ ****************************/
 function toggleCanClickSort() {
   if (canClickSort) {
+    // Don't allow sort buttons to be clicked
     canClickSort = false;
     sortTitles.forEach((title) => {
       title.style.cursor = "default";
     });
   } else {
+    // Allow sort buttons to be clicked
     canClickSort = true;
     sortTitles.forEach((title) => {
       title.style.cursor = "pointer";
@@ -115,15 +125,16 @@ function toggleCanClickSort() {
   }
 }
 
-/*
- * Generate Array Button
- */
+/****************************
+ Generate Array Function
+ ****************************/
 function generateArray() {
-  if (!canClickSort) toggleCanClickSort();
-  arrIsGen = true;
+  // Return if array is being sorted
   if (!canClick) return;
+  // Allow sorting after array is generated
+  if (!canClickSort) toggleCanClickSort();
   arr = Array(elementNum);
-  // Create array with random elements
+  // Loop through array and generate random elements
   for (let i = 0; i < arr.length; i++) {
     arr[i] = Math.trunc(Math.random() * maxElement);
   }
@@ -131,24 +142,27 @@ function generateArray() {
   inputMsg.textContent =
     "Random array generated! Choose a sorting algorithm :)";
   printArr();
+  // Set generated array flag
+  arrIsGen = true;
 }
 genArrBtn.addEventListener("click", generateArray);
 
-/*
- * Generate Bubble Sort Button
- */
+/****************************
+ Bubble Sort Function
+ ****************************/
 function bubbleSort() {
   // Return if sort cannot be done
   if (!arrIsGen || !canClick || !canClickSort) return;
   // Print runtime
   inputMsg.textContent = "Bubble sort runtime is O(n^2)!";
+  // Disable buttons form being clicked
   toggleCanClick();
-  // Preform BubbleSort
+  // Perform BubbleSort
   let len = arr.length;
   let num = 1;
   for (let i = 0; i < len - 1; i++) {
     for (let j = 0; j < len - i - 1; j++) {
-      // Preform operations after a certian amount of time
+      // Perform operations after a certian amount of time
       setTimeout(() => {
         arrElements = document.querySelectorAll(".bar");
         if (arr[j] > arr[j + 1]) {
@@ -169,12 +183,14 @@ function bubbleSort() {
           arrElements[j + 1].firstChild.textContent = arr[j + 1];
           arrElements[j + 1].style.width = 80 / arr.length + "%";
         }
+        // Color active elements
         if (j - 1 >= 0) resetColor(j - 1);
         colorArr(j, currentColor1);
         colorArr(j + 1, currentColor1);
       }, num * timePerOperation);
       num++;
     }
+    // Color completed elements
     setTimeout(() => {
       colorArr(arr.length - 1 - i, completedColor);
       resetColor(arr.length - 2 - i);
@@ -190,3 +206,7 @@ function bubbleSort() {
   }, num * timePerOperation);
 }
 bubSortBtn.addEventListener("click", bubbleSort);
+
+/****************************
+ Selection Sort Function
+ ****************************/
