@@ -9,6 +9,8 @@ let arr = Array(elementNum);
 const maxElement = 100;
 let timePerOperation = 33;
 const currentColor1 = "#4f759b";
+// const currentColor2 = "#331832";
+const currentColor2 = "#563C5C";
 const completedColor = "#436436";
 // booleans
 let arrIsGen = false;
@@ -22,6 +24,7 @@ const inputMsg = document.querySelector(".input_msg");
 const arrContianer = document.querySelector(".arr_container");
 let arrElements = document.querySelectorAll(".bar");
 const bubSortBtn = document.querySelector(".bub_sort");
+const selSortBtn = document.querySelector(".sel_sort");
 const merSortBtn = document.querySelector(".mer_sort");
 const speedSlider = document.querySelector(".speed");
 const sizeSlider = document.querySelector(".size");
@@ -64,12 +67,32 @@ function printArr() {
 }
 
 /****************************
+ Swap Elements Function
+ ****************************/
+function swapElements(i, j) {
+  arrElements = document.querySelectorAll(".bar");
+  // Update array elements
+  let temp = arr[i];
+  arr[i] = arr[j];
+  arr[j] = temp;
+  // Update elements in HTML
+  arrElements[i].setAttribute("style", `--bar-value:${arr[i]}%;`);
+  arrElements[i].setAttribute("data", arr[i]);
+  arrElements[i].firstChild.textContent = arr[i];
+  arrElements[i].style.width = 80 / arr.length + "%";
+  arrElements[j].setAttribute("style", `--bar-value:${arr[j]}%;`);
+  arrElements[j].setAttribute("data", arr[j]);
+  arrElements[j].firstChild.textContent = arr[j];
+  arrElements[j].style.width = 80 / arr.length + "%";
+}
+
+/****************************
  Reset Array Element Color Function
  ****************************/
-function resetColor(i) {
+function resetColor(arrNum) {
   // Find array element
   arrElements = document.querySelectorAll(".bar");
-  const element = arrElements[i];
+  const element = arrElements[arrNum];
   // Reset color and text color
   element.style.backgroundColor = "";
   element.firstChild.style.color = "";
@@ -158,30 +181,14 @@ function bubbleSort() {
   // Disable buttons form being clicked
   toggleCanClick();
   // Perform BubbleSort
-  let len = arr.length;
-  let num = 1;
-  for (let i = 0; i < len - 1; i++) {
-    for (let j = 0; j < len - i - 1; j++) {
+  let num = 0;
+  for (let i = 0; i < arr.length - 1; i++) {
+    for (let j = 0; j < arr.length - i - 1; j++) {
       // Perform operations after a certian amount of time
       setTimeout(() => {
-        arrElements = document.querySelectorAll(".bar");
+        // Swap elements if necessary
         if (arr[j] > arr[j + 1]) {
-          // Update array elements
-          let temp = arr[j];
-          arr[j] = arr[j + 1];
-          arr[j + 1] = temp;
-          // Update elements in HTML
-          arrElements[j].setAttribute("style", `--bar-value:${arr[j]}%;`);
-          arrElements[j].setAttribute("data", arr[j]);
-          arrElements[j].firstChild.textContent = arr[j];
-          arrElements[j].style.width = 80 / arr.length + "%";
-          arrElements[j + 1].setAttribute(
-            "style",
-            `--bar-value:${arr[j + 1]}%;`
-          );
-          arrElements[j + 1].setAttribute("data", arr[j + 1]);
-          arrElements[j + 1].firstChild.textContent = arr[j + 1];
-          arrElements[j + 1].style.width = 80 / arr.length + "%";
+          swapElements(j, j + 1);
         }
         // Color active elements
         if (j - 1 >= 0) resetColor(j - 1);
@@ -210,3 +217,47 @@ bubSortBtn.addEventListener("click", bubbleSort);
 /****************************
  Selection Sort Function
  ****************************/
+function selectionSort() {
+  // Return if sort cannot be done
+  if (!arrIsGen || !canClick || !canClickSort) return;
+  // Print runtime
+  inputMsg.textContent = "Selection sort runtime is O(n^2)!";
+  // Disable buttons form being clicked
+  toggleCanClick();
+  // Perform SelectionSort
+  let num = 0;
+  for (let i = 0; i < arr.length - 1; i++) {
+    let minIndex = i;
+    for (let j = i + 1; j < arr.length; j++) {
+      // Perform operations after a certian amount of time
+      setTimeout(() => {
+        // Color active elements
+        colorArr(minIndex, currentColor2);
+        if (j - 1 != minIndex) resetColor(j - 1);
+        colorArr(j, currentColor1);
+        if (arr[j] < arr[minIndex]) {
+          resetColor(minIndex);
+          minIndex = j;
+          colorArr(minIndex, currentColor2);
+        }
+      }, num * timePerOperation);
+      num++;
+    }
+    // Color completed elements
+    setTimeout(() => {
+      swapElements(i, minIndex);
+      resetColor(minIndex);
+      resetColor(arr.length - 1);
+      colorArr(i, completedColor);
+    }, num * timePerOperation);
+  }
+  // Reset color to default color and allow other buttons to be clicked
+  setTimeout(() => {
+    colorArr(arr.length - 1, completedColor);
+    toggleCanClick();
+    toggleCanClickSort();
+    inputMsg.textContent =
+      "Congrats your array is now sorted! Click Generate Array to try again!";
+  }, num * timePerOperation);
+}
+selSortBtn.addEventListener("click", selectionSort);
