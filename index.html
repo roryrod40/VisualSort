@@ -15,13 +15,9 @@
 
 <body>
   <header>
-    <h1>VisualSort</h1>
-    <a class="head_title gen_arr">Generate Array</a>
-    <a class="head_title sort bub_sort">Bubble Sort</a>
-    <a class="head_title sort sel_sort">Selection Sort</a>
-    <a class="head_title sort mer_sort">Merge Sort</a>
-    <a class="head_title sort quick_sort">Quick Sort</a>
-    <div class="sliders">
+    <div class="header_left">
+      <h1>VisualSort</h1>
+      <a class="head_title gen_arr">Generate Array</a>
       <div class="slider_container">
         <span class="slider_text">Speed</span>
         <input type="range" min="1" max="5" value="3" class="slider speed">
@@ -31,7 +27,12 @@
         <input type="range" min="1" max="5" value="3" class="slider size">
       </div>
     </div>
-
+    <div class="header_right">
+      <a class="head_title sort bub_sort">Bubble Sort</a>
+      <a class="head_title sort sel_sort">Selection Sort</a>
+      <a class="head_title sort ins_sort">Insertion Sort</a>
+      <a class="head_title sort mer_sort">Merge Sort</a>
+    </div>
   </header>
   <p class="input_msg">Adjust speed and size, then click generate array to begin!
   </p>
