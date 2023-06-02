@@ -110,7 +110,7 @@ h1 {
 .arr_container {
   margin: auto;
   max-width: 90%;
-  height: 36rem;
+  height: 70vh;
   display: flex;
   justify-content: center;
   position: relative;
