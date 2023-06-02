@@ -9,9 +9,9 @@ let arr = Array(elementNum);
 const maxElement = 100;
 let timePerOperation = 33;
 const currentColor1 = "#4f759b";
-// const currentColor2 = "#331832";
 const currentColor2 = "#563C5C";
 const completedColor = "#436436";
+const bigNum = 9999999;
 // booleans
 let arrIsGen = false;
 let canClick = true;
@@ -92,9 +92,6 @@ function swapElements(i, j) {
  ****************************/
 function setElement(i, j, num) {
   arrElements = document.querySelectorAll(".bar");
-  // Update array element
-  // arr[i] = j;
-  // Update element in HTML
   setTimeout(() => {
     arrElements[i].setAttribute("style", `--bar-value:${j}%;`);
     arrElements[i].setAttribute("data", j);
@@ -125,6 +122,22 @@ function colorArr(arrNum, colorCode) {
   // Add color and text color
   element.style.backgroundColor = colorCode;
   element.firstChild.style.color = colorCode;
+  // Set value to color code
+  element.value = colorCode;
+}
+
+/****************************
+ Reset All Elements of a Color Function
+ ****************************/
+function resetCurrentColor(colorCode) {
+  arrElements = document.querySelectorAll(".bar");
+  // Loop through every element and reset colorCode
+  arrElements.forEach((element) => {
+    if (element.value == colorCode) {
+      element.style.backgroundColor = "";
+      element.firstChild.style.color = "";
+    }
+  });
 }
 
 /****************************
@@ -282,6 +295,7 @@ selSortBtn.addEventListener("click", selectionSort);
 /****************************
  Insertion Sort Functions
  ****************************/
+// Function for color changes
 function colorInsert1(i, j, num) {
   setTimeout(() => {
     if (j + 2 < arr.length - 1 && j + 2 < i) colorArr(j + 2, completedColor);
@@ -290,7 +304,7 @@ function colorInsert1(i, j, num) {
     colorArr(i, currentColor2);
   }, num * timePerOperation);
 }
-
+// Second function for color changes
 function colorInsert2(i, j, num) {
   setTimeout(() => {
     colorArr(j + 1, completedColor);
@@ -298,7 +312,7 @@ function colorInsert2(i, j, num) {
     if (j > -1) colorArr(j, completedColor);
   }, num * timePerOperation);
 }
-
+// Main insertion sort function
 function insertionSort() {
   // Return if sort cannot be done
   if (!arrIsGen || !canClick || !canClickSort) return;
@@ -337,8 +351,62 @@ function insertionSort() {
 insSortBtn.addEventListener("click", insertionSort);
 
 /****************************
- Merge Sort Function
+ Merge Sort Functions
  ****************************/
+// Used for so settimout is consistent between all merge sort functions
+let merNum = 0;
+
+// Function for color changes
+function colorMerge1(i, j, num, size) {
+  setTimeout(() => {
+    resetCurrentColor(currentColor1);
+    colorArr(i, currentColor1);
+    colorArr(j, currentColor1);
+    if (size == elementNum) {
+      colorArr(i, completedColor);
+    }
+  }, num * timePerOperation);
+}
+
+// function for merging two arrays
+function merge(left, right, start, end) {
+  // Sorted items go here
+  let mid = start + left.length;
+  let sortedArr = [];
+  while (left.length || right.length) {
+    const leftVal = left.length ? left[0] : bigNum;
+    const rightVal = right.length ? right[0] : bigNum;
+    // Insert the smallest item into sortedArr
+    if (leftVal < rightVal) {
+      sortedArr.push(left.shift());
+      setElement(start + sortedArr.length - 1, leftVal, merNum);
+    } else {
+      sortedArr.push(right.shift());
+      setElement(start + sortedArr.length - 1, rightVal, merNum);
+    }
+    colorMerge1(
+      start + sortedArr.length - 1,
+      start + left.length + sortedArr.length - 1,
+      merNum,
+      sortedArr.length + left.length + right.length
+    );
+    merNum++;
+  }
+  return sortedArr;
+}
+
+// Function for sorting the array
+function mergeSorting(array, start, end) {
+  // Base case
+  if (array.length <= 1) return array;
+  let mid = Math.floor(array.length / 2);
+  // Recursive calls
+  let left = mergeSorting(array.slice(0, mid), start, start + mid - 1);
+  let right = mergeSorting(array.slice(mid), start + mid, end);
+  return merge(left, right, start, end);
+}
+
+// Main Merge Sort Function
 function mergeSort() {
   // Return if sort cannot be done
   if (!arrIsGen || !canClick || !canClickSort) return;
@@ -346,40 +414,17 @@ function mergeSort() {
   inputMsg.textContent = "Merge sort runtime is O(log n)!";
   // Disable buttons form being clicked
   toggleCanClick();
+  // Reset Merge Number
+  merNum = 0;
   // Perform Merge Sort
-  let num = 0;
-  for (let i = 0; i < arr.length - 1; i++) {
-    let minIndex = i;
-    for (let j = i + 1; j < arr.length; j++) {
-      // Perform operations after a certian amount of time
-      setTimeout(() => {
-        // Color active elements
-        colorArr(minIndex, currentColor2);
-        if (j - 1 != minIndex) resetColor(j - 1);
-        colorArr(j, currentColor1);
-        if (arr[j] < arr[minIndex]) {
-          resetColor(minIndex);
-          minIndex = j;
-          colorArr(minIndex, currentColor2);
-        }
-      }, num * timePerOperation);
-      num++;
-    }
-    // Color completed elements
-    setTimeout(() => {
-      swapElements(i, minIndex);
-      resetColor(minIndex);
-      resetColor(arr.length - 1);
-      colorArr(i, completedColor);
-    }, num * timePerOperation);
-  }
+  arr = mergeSorting(arr, 0, elementNum - 1);
   // Reset color to default color and allow other buttons to be clicked
   setTimeout(() => {
-    colorArr(arr.length - 1, completedColor);
     toggleCanClick();
     toggleCanClickSort();
+    console.log(arr);
     inputMsg.textContent =
       "Congrats your array is now sorted! Click Generate Array to try again!";
-  }, num * timePerOperation);
+  }, merNum * timePerOperation);
 }
 merSortBtn.addEventListener("click", mergeSort);
